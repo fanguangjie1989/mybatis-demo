@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 
+	properties?,
+	settings?,
+	typeAliases?,
+	typeHandlers?,
+	objectFactory?,
+	objectWrapperFactory?,
+	reflectorFactory?,
+	plugins?,
+	environments?,
+	databaseIdProvider?,
+	mappers?
+	 -->
+
+	<!-- MyBatis 属性的加载顺序
+	 1.在 properties 元素体内指定的属性首先被读取。 
+	 2.然后根据 properties 元素中的 resource 属性读取类路径下属性文件或根据 url 属性指定的路径读取属性文件，并覆盖已读取的同名属性。 
+	 3.最后读取作为方法参数传递的属性parameterType，并覆盖已读取的同名属性。 -->
+	<properties resource="db.properties">
+		<property name="jdbc.username" value="admin" />
+		<property name="jdbc.password" value="admin" />
+	</properties>
+	<!-- 类型别名是为 Java 类型设置一个短的名字。它只和 XML 配置有关，存在的意义仅在于用来减少类完全限定名的冗余 -->
+	<typeAliases>
+		<!-- 
+		<typeAlias alias="Users" type="examples.mybatis.entity.Users" />
+		 -->
+		<!-- 指定一个包名，MyBatis 会在包名下面搜索需要的 Java Bean 在没有注解的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名。 -->
+		<package name="examples.mybatis.entity" />
+	</typeAliases>
+
+	<!-- 无论是 MyBatis 在预处理语句（PreparedStatement）中设置一个参数时，还是从结果集中取出一个值时， 都会用类型处理器将获取的值以合适的方式转换成 
+		Java 类型 -->
+
+	<typeHandlers>
+		<!-- jdbcType 指定被关联的 JDBC 类型 javaType 指定类型处理器处理的 Java 类型 -->
+		<!-- <typeHandler handler="" javaType="" jdbcType="" /> -->
+		<package name="examples.mybatis.typehandler" />
+	</typeHandlers>
+
+	<!-- 和spring整合后environments配置将废除 -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 使用jdbc事务管理 -->
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<!-- 动态配置的属性值 -->
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<!-- using classpath relative resources -->
+		<mapper resource="mybatis/UsersMapper.xml" />
+		<mapper resource="mapper/UsersMapper.xml" />
+		
+		<!-- 
+			当满足以下两个条件时
+			1.使用mapper代理
+			2.UsersMapper.xml 和对应的mapper接口代理需要同名且位于同一个路径下
+			可以使用
+			<mapper class=""/> 指定加载特定的mapper映射文件
+			<package name=""/> 指定加载指定包下所有的mapper映射文件
+		 -->
+	</mappers>
+</configuration>
