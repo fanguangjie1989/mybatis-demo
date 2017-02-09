@@ -70,5 +70,6 @@
 			<mapper class=""/> 指定加载特定的mapper映射文件
 			<package name=""/> 指定加载指定包下所有的mapper映射文件
 		 -->
+		 <mapper class="examples.mybatis.mapper.OrdersCustomMapper"/>
 	</mappers>
 </configuration>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Mapper代理开发 约定： 1.namespace是接口地址 2.Mapper对应java接口类中方法名称和对应的mapper映射文件中元素的id属性值一致 
+	3.Mapper对应java接口类中方发参数mapper映射文件中元素的parameterType属性值一致,返回类型和resultType类型一致 -->
+<mapper namespace="examples.mybatis.mapper.OrdersCustomMapper">
+	
+	<!-- resultType 需要数据库中表和实体类完全对应 -->
+	<!-- 查询订单 -->
+	<select id="findOrdersUsers" resultType="ordersCustom">
+		select orders.*,users.username,users.password from orders,users where orders.usersid=users.id
+	</select>
+	
+	<!-- resultMap 数据库中表的列名和实体类的属性名称可以做对应的映射 可以实现延迟加载的功能 -->
+	<resultMap type="orders" id="OrdersUsersResultMap">
+		<id column="id" property="id"/>
+		<result column="usersId" property="usersId"/>
+		<result column="createtime" property="createtime"/>
+		
+		<!-- 
+			 一对一关联
+			 association 用于映射关联查询单个对象的信息
+			 property    关联查询的用户信息映射到orders中对应的属性
+			 javaType    属性java类型
+		 -->
+		<association property="user" javaType="users">
+			<id column="usersId" property="id"/>
+			<result column="username" property="username"/>
+			<result column="password" property="password"/>
+		</association>
+	</resultMap>
+	<!--  resultMap -->
+	<select id="findOrdersUsersResultMap" resultMap="OrdersUsersResultMap">
+		select orders.*,users.username,users.password from orders,users where orders.usersid=users.id
+	</select>
+	
+	<resultMap type="orders" id="OrdersUsersOrderDetailResultMap">
+		<id column="id" property="id"/>
+		<result column="usersId" property="usersId"/>
+		<result column="createtime" property="createtime"/>
+		
+		<!-- 
+			 一对一关联
+			 association 用于映射关联查询单个对象的信息
+			 property    关联查询的用户信息映射到orders中对应的属性
+			 javaType    属性java类型
+		 -->
+		<association property="user" javaType="users">
+			<id column="usersId" property="id"/>
+			<result column="username" property="username"/>
+			<result column="password" property="password"/>
+		</association>
+		
+		<!-- 一对多关联
+			collection 将关联查询的多条记录映射到集合对象中
+			property   对应的属性名称
+			ofType指定集合属性中pojo的类型
+		 -->
+		<collection property="orderdetails" ofType="ordersDetail">
+			<result column="id" property="ordersId"/>
+			<result column="itemscode" property="itemsCode"/>
+			<result column="itemsnum" property="itemsNum"/>
+		</collection>
+	</resultMap>
+	
+	<select id="findOrdersUsersOrderDetailResultMap" resultMap="OrdersUsersOrderDetailResultMap" >
+		select orders.*,users.username,users.password,orderdetail.itemscode,orderdetail.itemsnum from orders,users,orderdetail where orders.usersid=users.id and orders.id=orderdetail.ordersid
+	</select>
+	
+	<resultMap type="orders" id="OrdersUsersOrderDetailItemsResultMap">
+				<id column="id" property="id"/>
+		<result column="usersId" property="usersId"/>
+		<result column="createtime" property="createtime"/>
+		
+		<!-- 
+			 一对一关联
+			 association 用于映射关联查询单个对象的信息
+			 property    关联查询的用户信息映射到orders中对应的属性
+			 javaType    属性java类型
+		 -->
+		<association property="user" javaType="users">
+			<id column="usersId" property="id"/>
+			<result column="username" property="username"/>
+			<result column="password" property="password"/>
+		</association>
+		
+		<!-- 一对多关联
+			collection 将关联查询的多条记录映射到集合对象中
+			property   对应的属性名称
+			ofType指定集合属性中pojo的类型
+		 -->
+		<collection property="orderdetails" ofType="ordersDetail">
+			<result column="id" property="ordersId"/>
+			<result column="itemscode" property="itemsCode"/>
+			<result column="itemsnum" property="itemsNum"/>
+			<!-- 一个订单明细对应一个商品 -->
+			<association property="items" javaType="items" >
+				<result column="itemscode" property="itemCode"/>
+				<result column="itemsname" property="itemName"/>
+				<result column="price" property="price"/>
+			</association>
+		</collection>
+	</resultMap>
+
+	<select id="findOrdersUsersOrderDetailItemsResultMap" resultMap="OrdersUsersOrderDetailItemsResultMap" >
+		select orders.*,users.username,users.password,orderdetail.itemscode,orderdetail.itemsnum,items.itemscode,items.itemsname,items.price from orders,users,orderdetail,items where orders.usersid=users.id and orders.id=orderdetail.ordersid and items.itemscode=orderdetail.itemscode
+	</select>
+
+</mapper>
