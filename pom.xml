@@ -8,7 +8,7 @@
 	<description>mybatis demo</description>
 
 	<properties>
-		<mybatis.version>3.2.2</mybatis.version>
+		<mybatis.version>3.5.6</mybatis.version>
 		<mysql.version>5.1.32</mysql.version>
 		<slf4j.version>1.7.5</slf4j.version>
 	</properties>
